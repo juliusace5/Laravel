@@ -1,4 +1,4 @@
-version: '3.7'
+version: '3.8'
 services:
   app:
     build:
@@ -9,6 +9,7 @@ services:
     working_dir: /var/www
     volumes:
       - .:/var/www
+      - ./php.ini:/usr/local/etc/php/php.ini # Include custom PHP configuration if needed
     ports:
       - "9000:9000"
     environment:
@@ -31,8 +32,9 @@ services:
     volumes:
       - mysql_data:/var/lib/mysql
     ports:
-      - "3306:3306"
+      - "3307:3306"
 
 volumes:
   mysql_data:
     driver: local
+
