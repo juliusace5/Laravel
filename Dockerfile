@@ -19,7 +19,8 @@ RUN apt-get update && \
     git \
     curl \
     libonig-dev \
-    libzip-dev && \
+    libzip-dev \
+    nginx && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
@@ -39,14 +40,20 @@ RUN composer --version
 # Copy the existing application directory contents
 COPY . /var/www
 
+# Copy Nginx configuration file
+COPY nginx.conf /etc/nginx/nginx.conf
+
 # Set permissions for Laravel
 RUN chown -R www-data:www-data /var/www \
     && chmod -R 755 /var/www/storage \
     && chmod -R 755 /var/www/bootstrap/cache
 
-# Expose port 9000 and start php-fpm server
-EXPOSE 9000
-CMD ["php-fpm"]
+# Expose port 80 for Nginx
+EXPOSE 80
+
+# Start Nginx and PHP-FPM
+CMD service nginx start && php-fpm
+
 
 
 
