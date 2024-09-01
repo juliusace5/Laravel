@@ -54,6 +54,9 @@ EXPOSE 80
 # Start Nginx and PHP-FPM
 CMD service nginx start && php-fpm
 
+RUN mkdir -p /var/www/public
+
+
 
 
 
