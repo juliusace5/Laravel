@@ -33,5 +33,8 @@ ENTRYPOINT ["docker-entrypoint.sh"]
 
 FROM php:8.2-fpm
 
+EXPOSE 80
+
+
 
 CMD ["php-fpm"]
