@@ -9,7 +9,8 @@ services:
       DB_DATABASE: acelaravel
       DB_USERNAME: acelaravel_user
       DB_PASSWORD: "zJpicnos76KVcURUuOFUuIRf8ltSbUz8"
-    ports:
-      - "8080:80"
+      PORT: 10000  
+      ports:
+      - "${PORT}:${PORT}" 
     volumes:
       - .:/var/www

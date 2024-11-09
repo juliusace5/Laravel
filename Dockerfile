@@ -35,6 +35,9 @@ FROM php:8.2-fpm
 
 EXPOSE 80
 
+EXPOSE 10000
+
+
 
 
 CMD ["php-fpm"]
