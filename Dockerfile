@@ -1,62 +1,37 @@
-# Use an official PHP runtime as a parent image
+# Use the official PHP image as the base
 FROM php:8.1-fpm
 
-# Set the working directory inside the container
-WORKDIR /var/www
-
-# Install system dependencies
-RUN apt-get update && \
-    apt-get install -y \
-    build-essential \
-    libpng-dev \
-    libjpeg-dev \
-    libfreetype6-dev \
-    locales \
-    zip \
-    jpegoptim optipng pngquant gifsicle \
-    vim \
-    unzip \
+# Install dependencies
+RUN apt-get update && apt-get install -y \
     git \
     curl \
+    libpng-dev \
     libonig-dev \
-    libzip-dev \
-    nginx && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
-
-# Clear cache
-RUN apt-get clean && rm -rf /var/lib/apt/lists/*
-
-# Install PHP extensions
-RUN docker-php-ext-configure gd --with-freetype --with-jpeg && \
-    docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip
+    libxml2-dev \
+    zip \
+    unzip \
+    && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
 
 # Install Composer
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Verify Composer installation
-RUN composer --version
+# Set working directory
+WORKDIR /var/www
 
-# Copy the existing application directory contents
+# Copy existing application directory contents
 COPY . /var/www
 
-# Copy Nginx configuration file
-COPY nginx.conf /etc/nginx/nginx.conf
+# Install Laravel dependencies
+RUN composer install --optimize-autoloader --no-dev
 
-# Set permissions for Laravel
-RUN chown -R www-data:www-data /var/www \
-    && chmod -R 755 /var/www/storage \
-    && chmod -R 755 /var/www/bootstrap/cache
+RUN composer install --no-interaction --prefer-dist --optimize-autoloader --no-dev
 
-# Expose port 80 for Nginx
-EXPOSE 80
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
-# Start Nginx and PHP-FPM
-CMD service nginx start && php-fpm
+# Set the entrypoint to start up php-fpm
+ENTRYPOINT ["docker-entrypoint.sh"]
 
-RUN mkdir -p /var/www/public
+FROM php:8.2-fpm
 
 
-
-
-
+CMD ["php-fpm"]

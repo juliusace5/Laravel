@@ -1,41 +1,15 @@
-version: '3.8'
 services:
   app:
     build:
       context: .
-      dockerfile: Dockerfile
-    container_name: laravel_app
-    restart: unless-stopped
-    working_dir: /var/www
+    environment:
+      DB_CONNECTION: pgsql
+      DB_HOST: dpg-csnhmnij1k6c73b3ljqg-a
+      DB_PORT: 5432
+      DB_DATABASE: acelaravel
+      DB_USERNAME: acelaravel_user
+      DB_PASSWORD: "zJpicnos76KVcURUuOFUuIRf8ltSbUz8"
+    ports:
+      - "8000:8000"
     volumes:
       - .:/var/www
-      - ./php.ini:/usr/local/etc/php/php.ini # Include custom PHP configuration if needed
-    ports:
-      - "80:80"
-    environment:
-      - APP_ENV=production
-      - DB_HOST=mysql
-      - DB_PORT=3306
-      - DB_DATABASE=apidb
-      - DB_USERNAME=root
-      - DB_PASSWORD=253211Ace#
-
-  mysql:
-    image: mysql:5.7
-    container_name: mysql
-    restart: unless-stopped
-    environment:
-      MYSQL_DATABASE: apidb
-      MYSQL_USER: root
-      MYSQL_PASSWORD: 253211Ace#
-      MYSQL_ROOT_PASSWORD: 253211Ace#
-    volumes:
-      - mysql_data:/var/lib/mysql
-    ports:
-      - "3307:3306"
-
-volumes:
-  mysql_data:
-    driver: local
-
-
